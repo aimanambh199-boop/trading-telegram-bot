@@ -1,24 +1,37 @@
-import numpy as np
+import pandas as pd
+from ta.momentum import RSIIndicator
+from ta.trend import EMAIndicator
 
-# RSI Indicator
-def rsi(prices, period=14):
 
-    deltas = np.diff(prices)
+def calculate_indicators(closes):
 
-    gain = np.maximum(deltas, 0)
-    loss = np.abs(np.minimum(deltas, 0))
+    df = pd.DataFrame()
+    df["close"] = closes
 
-    avg_gain = np.mean(gain[:period])
-    avg_loss = np.mean(loss[:period])
+    rsi = RSIIndicator(df["close"], window=14).rsi().iloc[-1]
+    ema = EMAIndicator(df["close"], window=20).ema_indicator().iloc[-1]
 
-    if avg_loss == 0:
-        return 100
+    return rsi, ema
 
-    rs = avg_gain / avg_loss
 
-    rsi_value = 100 - (100 / (1 + rs))
+def candle_pattern(closes, opens):
 
-    return rsi_value
+    if len(closes) < 2:
+        return None
+
+    last_close = closes[-1]
+    last_open = opens[-1]
+
+    prev_close = closes[-2]
+    prev_open = opens[-2]
+
+    if prev_close < prev_open and last_close > last_open and last_close > prev_open:
+        return "BULLISH"
+
+    if prev_close > prev_open and last_close < last_open and last_close < prev_open:
+        return "BEARISH"
+
+    return None
 
 
 # EMA Indicator
@@ -31,5 +44,6 @@ def ema(prices, period=20):
     for price in prices:
 
         ema_value = (price - ema_value) * multiplier + ema_value
+
 
     return ema_value
