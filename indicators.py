@@ -33,17 +33,3 @@ def candle_pattern(closes, opens):
 
     return None
 
-
-# EMA Indicator
-def ema(prices, period=20):
-
-    ema_value = prices[0]
-
-    multiplier = 2 / (period + 1)
-
-    for price in prices:
-
-        ema_value = (price - ema_value) * multiplier + ema_value
-
-
-    return ema_value
