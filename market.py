@@ -1,22 +1,25 @@
 import requests
-from config import TWELVE_DATA_API_KEY
 
-def get_market_data(pair, timeframe):
+API_KEY = "98521af3ba4d4620985262aaef2caf7b"
 
-    if pair == "EURUSD":
-        pair = "EUR/USD"
+def get_prices(pair):
 
-    if pair == "GBPUSD":
-        pair = "GBP/USD"
+    url = f"https://api.twelvedata.com/time_series?symbol={pair}&interval=1min&outputsize=50&apikey={API_KEY}"
 
-    url = f"https://api.twelvedata.com/time_series?symbol={pair}&interval={timeframe}&apikey={TWELVE_DATA_API_KEY}&outputsize=100"
+    r = requests.get(url).json()
 
-    response = requests.get(url)
-    data = response.json()
+    closes = []
+    opens = []
 
-    candles = data["values"]
+    if "values" in r:
+        for candle in r["values"]:
+            closes.append(float(candle["close"]))
+            opens.append(float(candle["open"]))
 
-    closes = [float(c["close"]) for c in candles]
-    opens = [float(c["open"]) for c in candles]
+        closes.reverse()
+        opens.reverse()
+
+    return closes, opens
+
 
     return closes, opens
