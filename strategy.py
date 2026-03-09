@@ -1,38 +1,17 @@
-from indicators import rsi, ema
+def support_resistance(closes):
 
-def candle_pattern(open_prices, close_prices):
+    support = min(closes[-10:])
+    resistance = max(closes[-10:])
 
-    if close_prices[-1] > open_prices[-1] and close_prices[-2] < open_prices[-2]:
-        return "Bullish Engulfing"
-
-    if close_prices[-1] < open_prices[-1] and close_prices[-2] > open_prices[-2]:
-        return "Bearish Engulfing"
-
-    return "Normal"
+    return support, resistance
 
 
-def generate_signal(closes, opens):
+def generate_signal(price, rsi, ema, pattern, support, resistance):
 
-    rsi_value = rsi(closes)
-    ema_value = ema(closes)
+    if price > ema and rsi < 35 and pattern == "BULLISH" and price > support:
+        return "BUY 📈", 92
 
-    pattern = candle_pattern(opens, closes)
+    if price < ema and rsi > 65 and pattern == "BEARISH" and price < resistance:
+        return "SELL 📉", 92
 
-    price = closes[-1]
-
-    if rsi_value < 30 and price > ema_value:
-
-        signal = "BUY 📈"
-        confidence = 88
-
-    elif rsi_value > 70 and price < ema_value:
-
-        signal = "SELL 📉"
-        confidence = 88
-
-    else:
-
-        signal = "NO TRADE"
-        confidence = 50
-
-    return signal, confidence, rsi_value, pattern
+    return None, 0
