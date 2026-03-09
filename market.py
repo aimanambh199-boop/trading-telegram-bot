@@ -21,5 +21,3 @@ def get_prices(pair):
 
     return closes, opens
 
-
-    return closes, opens
