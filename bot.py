@@ -48,7 +48,7 @@ def main():
     
     def shutdown(sig, frame):
         print("Stopping bot safely...")
-        app.stop()
+        app.stop_running()
     
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
@@ -57,4 +57,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
