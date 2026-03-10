@@ -1,23 +1,21 @@
 import requests
 
-API_KEY = "98521af3ba4d4620985262aaef2caf7b"
-
 def get_prices(pair):
 
-    url = f"https://api.twelvedata.com/time_series?symbol={pair}&interval=1min&outputsize=50&apikey={API_KEY}"
+    url = f"https://api.binance.com/api/v3/klines?symbol={pair}T&interval=1m&limit=50"
 
-    r = requests.get(url).json()
+    try:
+        response = requests.get(url)
+        data = response.json()
 
-    closes = []
-    opens = []
+        closes = []
 
-    if "values" in r:
-        for candle in r["values"]:
-            closes.append(float(candle["close"]))
-            opens.append(float(candle["open"]))
+        for candle in data:
+            closes.append(float(candle[4]))
 
-        closes.reverse()
-        opens.reverse()
+        return closes
 
-    return closes, opens
+    except:
+        return None
+
 
